@@ -19,7 +19,9 @@ struct StockDetailView: View {
             }
         }
         .onAppear {
-            viewModel.loadIfNeeded()
+            Task {
+                await viewModel.loadIfNeeded()
+            }
         }
         .navigationTitle(viewModel.symbol)
         .navigationBarTitleDisplayMode(.inline)

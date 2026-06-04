@@ -2,10 +2,8 @@ import Foundation
 import Combine
 
 @MainActor
-final class StockDetailViewModel: ObservableObject {
+final class StockDetailViewModel: BaseViewModel {
     @Published private(set) var profile: StockProfile?
-    @Published private(set) var isLoading = true
-    @Published private(set) var errorMessage: String?
 
     let symbol: String
 
@@ -16,27 +14,19 @@ final class StockDetailViewModel: ObservableObject {
         self.fetchStockProfileUseCase = fetchStockProfileUseCase
     }
 
-    func loadIfNeeded() {
-        Task {
-            await loadIfNeededTask()
-        }
-    }
-    
-    func loadIfNeededTask() async {
+    func loadIfNeeded() async {
         guard profile == nil else { return }
 
         await load()
     }
 
     func load() async {
-        isLoading = true
-        defer { isLoading = false }
+        let loadedProfile = await performLoading {
+            try await fetchStockProfileUseCase.execute(symbol: symbol)
+        }
 
-        do {
-            profile = try await fetchStockProfileUseCase.execute(symbol: symbol)
-            errorMessage = nil
-        } catch {
-            errorMessage = error.localizedDescription
+        if let loadedProfile {
+            self.profile = loadedProfile
         }
     }
 }

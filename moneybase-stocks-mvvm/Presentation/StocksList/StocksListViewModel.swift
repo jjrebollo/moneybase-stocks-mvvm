@@ -2,10 +2,8 @@ import Foundation
 import Combine
 
 @MainActor
-final class StocksListViewModel: ObservableObject {
+final class StocksListViewModel: BaseViewModel {
     @Published private(set) var stocks: [StockQuote] = []
-    @Published private(set) var isLoading = false
-    @Published private(set) var errorMessage: String?
     @Published var searchText = ""
 
     private let fetchStocksUseCase: FetchStocksUseCaseProtocol
@@ -59,21 +57,12 @@ final class StocksListViewModel: ObservableObject {
     }
 
     private func loadStocks(showLoader: Bool) async {
-        if showLoader {
-            isLoading = true
+        let loadedStocks = await performLoading(showLoading: showLoader) {
+            try await fetchStocksUseCase.execute()
         }
 
-        defer {
-            if showLoader {
-                isLoading = false
-            }
-        }
-
-        do {
-            stocks = try await fetchStocksUseCase.execute()
-            errorMessage = nil
-        } catch {
-            errorMessage = error.localizedDescription
+        if let loadedStocks {
+            self.stocks = loadedStocks
         }
     }
 }
