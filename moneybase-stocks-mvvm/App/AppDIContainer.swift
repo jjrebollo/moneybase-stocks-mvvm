@@ -14,8 +14,10 @@ final class AppDIContainer {
         self.repository = repository
     }
 
-    func makeStocksListViewModel() -> StocksListViewModel {
-        StocksListViewModel(fetchStocksUseCase: FetchStocksUseCase(repository: repository))
+    func makeStocksListViewModel(shouldAutoRefresh: Bool) -> StocksListViewModel {
+        StocksListViewModel(
+            fetchStocksUseCase: FetchStocksUseCase(repository: repository),
+            shouldAutoRefresh: shouldAutoRefresh)
     }
 
     func makeStockDetailViewModel(symbol: String) -> StockDetailViewModel {

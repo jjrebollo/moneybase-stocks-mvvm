@@ -15,8 +15,11 @@ final class StocksListViewModel: BaseViewModel {
 
     private let fetchStocksUseCase: any FetchStocksUseCaseProtocol
     private var refreshTask: Task<Void, Never>?
+    private var shouldAutoRefresh: Bool
 
-    init(fetchStocksUseCase: any FetchStocksUseCaseProtocol) {
+    init(fetchStocksUseCase: any FetchStocksUseCaseProtocol,
+         shouldAutoRefresh: Bool) {
+        self.shouldAutoRefresh = shouldAutoRefresh
         self.fetchStocksUseCase = fetchStocksUseCase
     }
 
@@ -51,7 +54,8 @@ final class StocksListViewModel: BaseViewModel {
     }
 
     private func startAutoRefresh() {
-        guard refreshTask == nil else { return }
+        guard refreshTask == nil,
+              shouldAutoRefresh else { return }
 
         refreshTask = Task { [weak self] in
             while !Task.isCancelled {

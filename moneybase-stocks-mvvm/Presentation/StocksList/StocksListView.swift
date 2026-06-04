@@ -109,7 +109,7 @@ private struct StockRowView: View {
     let container = AppDIContainer()
 
     StocksListView(
-        viewModel: container.makeStocksListViewModel(),
+        viewModel: container.makeStocksListViewModel(shouldAutoRefresh: false),
         makeStockDetailViewModel: container.makeStockDetailViewModel(symbol:)
     )
 }

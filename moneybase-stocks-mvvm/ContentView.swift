@@ -14,7 +14,7 @@ struct ContentView: View {
 
     init(container: AppDIContainer) {
         self.container = container
-        self.listViewModel = container.makeStocksListViewModel()
+        self.listViewModel = container.makeStocksListViewModel(shouldAutoRefresh: true)
     }
 
     var body: some View {
