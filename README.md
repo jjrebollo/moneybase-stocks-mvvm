@@ -48,3 +48,27 @@ The app uses a lightweight DI pattern via `AppDIContainer`.
 
 The app currently uses mock in-memory data for both list and detail screens.
 A network-backed repository can be introduced later and injected through `AppDIContainer`.
+
+## API selection rationale
+
+The interview task references the RapidAPI listing for `apidojo/yh-finance` and these endpoints:
+
+- `market/v2/get-summary` for list data
+- `stock/v2/get-summary` for detail data
+
+During implementation, that listing was not available from the current RapidAPI account/portal view, while another Yahoo Finance listing was accessible:
+
+- `sparior/yahoo-finance15` (host: `yahoo-finance15.p.rapidapi.com`)
+
+After clarification from the interviewer that any API is acceptable as long as the app works, the chosen integration path is:
+
+- Keep the architecture API-agnostic via repository/use case abstractions
+- Implement with mock data first
+- Use `yahoo-finance15` as the live data source when wiring networking
+
+Expected live endpoint mapping:
+
+- List screen: market quote/ticker endpoint from `yahoo-finance15`
+- Detail screen: symbol/profile endpoint from `yahoo-finance15`
+
+This keeps behavior aligned with the task requirements while avoiding dependency on an inaccessible listing.
