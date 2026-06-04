@@ -8,17 +8,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    private let container: AppDIContainer
+
+    private let listViewModel: StocksListViewModel
+
+    init(container: AppDIContainer) {
+        self.container = container
+        self.listViewModel = container.makeStocksListViewModel()
+    }
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
+        StocksListView(
+            viewModel: listViewModel,
+            makeStockDetailViewModel: container.makeStockDetailViewModel(symbol:)
+        )
     }
 }
 
 #Preview {
-    ContentView()
+    ContentView(container: AppDIContainer())
 }
