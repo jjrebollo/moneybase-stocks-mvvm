@@ -1,3 +1,10 @@
+//
+//  StockDetailViewModel.swift
+//  moneybase-stocks-mvvm
+//
+//  Created by Juan Jose Rebollo on 04/06/2026.
+//
+
 import Foundation
 import Combine
 
@@ -7,9 +14,9 @@ final class StockDetailViewModel: BaseViewModel {
 
     let symbol: String
 
-    private let fetchStockProfileUseCase: FetchStockProfileUseCaseProtocol
+    private let fetchStockProfileUseCase: any FetchStockProfileUseCaseProtocol
 
-    init(symbol: String, fetchStockProfileUseCase: FetchStockProfileUseCaseProtocol) {
+    init(symbol: String, fetchStockProfileUseCase: any FetchStockProfileUseCaseProtocol) {
         self.symbol = symbol
         self.fetchStockProfileUseCase = fetchStockProfileUseCase
     }
@@ -22,7 +29,7 @@ final class StockDetailViewModel: BaseViewModel {
 
     func load() async {
         let loadedProfile = await performLoading {
-            try await fetchStockProfileUseCase.execute(symbol: symbol)
+            try await fetchStockProfileUseCase.execute(symbol)
         }
 
         if let loadedProfile {

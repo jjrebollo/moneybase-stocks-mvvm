@@ -1,3 +1,10 @@
+//
+//  BaseViewModel.swift
+//  moneybase-stocks-mvvm
+//
+//  Created by Juan Jose Rebollo on 04/06/2026.
+//
+
 import Combine
 import Foundation
 

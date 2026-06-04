@@ -1,47 +1,13 @@
+//
+//  StocksFormattingHelper.swift
+//  moneybase-stocks-mvvm
+//
+//  Created by Juan Jose Rebollo on 04/06/2026.
+//
+
 import Foundation
 
-struct StockQuote: Identifiable, Equatable, Sendable {
-    let symbol: String
-    let name: String
-    var lastPrice: Double
-    var netChange: Double
-    var percentChange: Double
-    var marketCap: Double
-
-    var id: String { symbol }
-
-    var lastPriceText: String {
-        StocksFormatting.currency(lastPrice)
-    }
-
-    var netChangeText: String {
-        StocksFormatting.signedNumber(netChange)
-    }
-
-    var percentChangeText: String {
-        StocksFormatting.signedPercent(percentChange)
-    }
-
-    var marketCapText: String {
-        StocksFormatting.marketCap(marketCap)
-    }
-
-    var isPositiveChange: Bool {
-        netChange >= 0
-    }
-}
-
-struct StockProfile: Equatable, Sendable {
-    let symbol: String
-    let companyName: String
-    let sector: String
-    let industry: String
-    let website: String
-    let summary: String
-    let fullTimeEmployees: Int
-}
-
-enum StocksFormatting {
+enum StocksFormattingHelper {
     private static let currencyFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -89,6 +55,6 @@ enum StocksFormatting {
             return String(format: "$%.2fM", value / million)
         }
 
-        return StocksFormatting.currency(value)
+        return StocksFormattingHelper.currency(value)
     }
 }

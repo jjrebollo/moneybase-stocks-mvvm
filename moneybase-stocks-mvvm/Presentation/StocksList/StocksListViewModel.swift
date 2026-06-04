@@ -1,3 +1,10 @@
+//
+//  StocksListViewModel.swift
+//  moneybase-stocks-mvvm
+//
+//  Created by Juan Jose Rebollo on 04/06/2026.
+//
+
 import Foundation
 import Combine
 
@@ -6,10 +13,10 @@ final class StocksListViewModel: BaseViewModel {
     @Published private(set) var stocks: [StockQuote] = []
     @Published var searchText = ""
 
-    private let fetchStocksUseCase: FetchStocksUseCaseProtocol
+    private let fetchStocksUseCase: any FetchStocksUseCaseProtocol
     private var refreshTask: Task<Void, Never>?
 
-    init(fetchStocksUseCase: FetchStocksUseCaseProtocol) {
+    init(fetchStocksUseCase: any FetchStocksUseCaseProtocol) {
         self.fetchStocksUseCase = fetchStocksUseCase
     }
 
