@@ -17,7 +17,7 @@ struct StockDetailView: View {
     var body: some View {
         Group {
             if viewModel.isLoading && viewModel.profile == nil {
-                progressview
+                progressView
             } else if let errorMessage = viewModel.errorMessage,
                         viewModel.profile == nil {
                 errorView(errorMessage)
@@ -32,6 +32,10 @@ struct StockDetailView: View {
         }
         .navigationTitle(viewModel.symbol)
         .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    private var progressView: some View {
+        ProgressView("Loading details...")
     }
     
     private func loadedView(_ profile: StockProfile) -> some View {
@@ -60,10 +64,6 @@ struct StockDetailView: View {
             }
             .padding()
         }
-    }
-    
-    private var progressview: some View {
-        ProgressView("Loading details...")
     }
     
     private func errorView(_ errorMessage: String) -> some View {

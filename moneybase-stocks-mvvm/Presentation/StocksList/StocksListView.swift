@@ -22,23 +22,13 @@ struct StocksListView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if viewModel.isLoading && viewModel.stocks.isEmpty {
-                    ProgressView("Loading stocks...")
-                } else if let errorMessage = viewModel.errorMessage, viewModel.stocks.isEmpty {
-                    ContentUnavailableView(
-                        "Failed to load stocks",
-                        systemImage: "wifi.exclamationmark",
-                        description: Text(errorMessage)
-                    )
+                if viewModel.filteredStocks.isEmpty {
+                    noStockView
+                } else if let errorMessage = viewModel.errorMessage,
+                            viewModel.stocks.isEmpty {
+                    errorView(errorMessage)
                 } else {
-                    List(viewModel.filteredStocks) { stock in
-                        NavigationLink {
-                            StockDetailView(viewModel: makeStockDetailViewModel(stock.symbol))
-                        } label: {
-                            StockRowView(stock: stock)
-                        }
-                    }
-                    .listStyle(.plain)
+                    loadedView
                 }
             }
             .navigationTitle("Stocks")
@@ -53,6 +43,37 @@ struct StocksListView: View {
                 viewModel.onDisappear()
             }
         }
+    }
+    
+    @ViewBuilder
+    private var noStockView: some View {
+        if viewModel.isLoading {
+            ProgressView("Loading stocks...")
+        } else {
+            ContentUnavailableView(
+                "No stock with selected criteria",
+                systemImage: "wifi.exclamationmark"
+            )
+        }
+    }
+    
+    private var loadedView: some View {
+        List(viewModel.filteredStocks) { stock in
+            NavigationLink {
+                StockDetailView(viewModel: makeStockDetailViewModel(stock.symbol))
+            } label: {
+                StockRowView(stock: stock)
+            }
+        }
+        .listStyle(.plain)
+    }
+    
+    private func errorView(_ errorMessage: String) -> some View {
+        ContentUnavailableView(
+            "Failed to load stocks",
+            systemImage: "wifi.exclamationmark",
+            description: Text(errorMessage)
+        )
     }
 }
 
