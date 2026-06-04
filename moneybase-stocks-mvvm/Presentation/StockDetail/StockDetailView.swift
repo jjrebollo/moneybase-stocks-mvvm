@@ -10,46 +10,59 @@ struct StockDetailView: View {
     var body: some View {
         Group {
             if viewModel.isLoading && viewModel.profile == nil {
-                ProgressView("Loading details...")
-            } else if let errorMessage = viewModel.errorMessage, viewModel.profile == nil {
-                ContentUnavailableView(
-                    "Failed to load details",
-                    systemImage: "exclamationmark.triangle",
-                    description: Text(errorMessage)
-                )
+                progressview
+            } else if let errorMessage = viewModel.errorMessage,
+                        viewModel.profile == nil {
+                errorView(errorMessage)
             } else if let profile = viewModel.profile {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Group {
-                            Text(profile.companyName)
-                                .font(.title2.bold())
-                            Text(profile.symbol)
-                                .font(.headline)
-                                .foregroundStyle(.secondary)
-                        }
-
-                        Group {
-                            DetailRow(title: "Sector", value: profile.sector)
-                            DetailRow(title: "Industry", value: profile.industry)
-                            DetailRow(title: "Employees", value: "\(profile.fullTimeEmployees)")
-                            DetailRow(title: "Website", value: profile.website)
-                        }
-
-                        Text("Business Summary")
-                            .font(.headline)
-                        Text(profile.summary)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding()
-                }
+                loadedView(profile)
             }
+        }
+        .onAppear {
+            viewModel.loadIfNeeded()
         }
         .navigationTitle(viewModel.symbol)
         .navigationBarTitleDisplayMode(.inline)
-        .task {
-            await viewModel.loadIfNeeded()
+    }
+    
+    private func loadedView(_ profile: StockProfile) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Group {
+                    Text(profile.companyName)
+                        .font(.title2.bold())
+                    Text(profile.symbol)
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Group {
+                    DetailRow(title: "Sector", value: profile.sector)
+                    DetailRow(title: "Industry", value: profile.industry)
+                    DetailRow(title: "Employees", value: "\(profile.fullTimeEmployees)")
+                    DetailRow(title: "Website", value: profile.website)
+                }
+
+                Text("Business Summary")
+                    .font(.headline)
+                Text(profile.summary)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
         }
+    }
+    
+    private var progressview: some View {
+        ProgressView("Loading details...")
+    }
+    
+    private func errorView(_ errorMessage: String) -> some View {
+        ContentUnavailableView(
+            "Failed to load details",
+            systemImage: "exclamationmark.triangle",
+            description: Text(errorMessage)
+        )
     }
 }
 

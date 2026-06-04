@@ -4,7 +4,7 @@ import Combine
 @MainActor
 final class StockDetailViewModel: ObservableObject {
     @Published private(set) var profile: StockProfile?
-    @Published private(set) var isLoading = false
+    @Published private(set) var isLoading = true
     @Published private(set) var errorMessage: String?
 
     let symbol: String
@@ -16,7 +16,13 @@ final class StockDetailViewModel: ObservableObject {
         self.fetchStockProfileUseCase = fetchStockProfileUseCase
     }
 
-    func loadIfNeeded() async {
+    func loadIfNeeded() {
+        Task {
+            await loadIfNeededTask()
+        }
+    }
+    
+    func loadIfNeededTask() async {
         guard profile == nil else { return }
 
         await load()
