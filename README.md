@@ -57,7 +57,7 @@ The app uses a lightweight DI pattern via `AppDIContainer`.
 - Inject use cases into view models
 - Inject repository into use cases
 
-### Network stack (latest)
+### Network stack
 
 The networking layer now follows an `ApiBuilder` style design:
 
