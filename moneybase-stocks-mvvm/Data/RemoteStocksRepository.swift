@@ -22,12 +22,12 @@ actor RemoteStocksRepository: StocksRepository {
         self.decoder = decoder
     }
 
-    func fetchStocks() async throws -> [StockQuote] {
+    func fetchStocks(page: Int) async throws -> [StockQuote] {
         let payload: StocksListResponseDTO = try await performRequest(
-            from: YahooFinanceEndpoint.stocksList(configuration: configuration, page: 1, type: "STOCKS")
+            from: YahooFinanceEndpoint.stocksList(configuration: configuration, page: page, type: "STOCKS")
         )
-        AppLogger.debug("fetchStocks response received", category: "Network")
-        AppLogger.debug("payload: \(payload)", category: "Network")
+        AppLogger.debug("fetchStocks response received (page: \(page))", category: .network)
+        AppLogger.debug("payload: \(payload)", category: .network)
         
         return await payload.parseToDomainModel()
     }
@@ -36,8 +36,8 @@ actor RemoteStocksRepository: StocksRepository {
         let payload: StockProfileResponseDTO = try await performRequest(
             from: YahooFinanceEndpoint.stockProfile(configuration: configuration, ticker: symbol, module: "asset-profile")
         )
-        AppLogger.debug("fetchStockProfile response received", category: "Network")
-        AppLogger.debug("payload: \(payload)", category: "Network")
+        AppLogger.debug("fetchStockProfile response received", category: .network)
+        AppLogger.debug("payload: \(payload)", category: .network)
         
         return await payload.parseToDomainModel()
     }

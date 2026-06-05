@@ -37,6 +37,14 @@ actor MockStocksRepository: StocksRepository {
         return quotes.sorted { $0.marketCap > $1.marketCap }
     }
 
+    func fetchStocks(page: Int) async throws -> [StockQuote] {
+        guard page == 1 else {
+            return []
+        }
+
+        return try await fetchStocks()
+    }
+
     func fetchStockProfile(symbol: String) async throws -> StockProfile {
         try await Task.sleep(for: .milliseconds(200))
 

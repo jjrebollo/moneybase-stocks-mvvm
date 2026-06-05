@@ -7,8 +7,8 @@
 
 import Foundation
 
-protocol FetchStocksUseCaseProtocol: Sendable, BaseUseCaseProtocol<Void, [StockQuote]> {
-    func handle(input: Void?) async throws -> [StockQuote]
+protocol FetchStocksUseCaseProtocol: Sendable, BaseUseCaseProtocol<Int, [StockQuote]> {
+    func handle(input: Int?) async throws -> [StockQuote]
 }
 
 final class FetchStocksUseCase: FetchStocksUseCaseProtocol {
@@ -19,7 +19,7 @@ final class FetchStocksUseCase: FetchStocksUseCaseProtocol {
         self.repository = repository
     }
     
-    func handle(input: ()?) async throws -> Array<StockQuote> {
-        try await repository.fetchStocks()
+    func handle(input: Int?) async throws -> Array<StockQuote> {
+        try await repository.fetchStocks(page: input ?? 1)
     }
 }

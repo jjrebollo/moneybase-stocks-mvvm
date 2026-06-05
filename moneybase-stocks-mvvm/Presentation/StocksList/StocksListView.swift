@@ -36,6 +36,15 @@ struct StocksListView: View {
         .refreshable {
             await viewModel.refresh()
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if viewModel.showRefreshAvailableCTA {
+                    Button("Refresh") {
+                        Task { await viewModel.refreshFromCTA() }
+                    }
+                }
+            }
+        }
         .task {
             await viewModel.onAppear()
         }
@@ -57,17 +66,44 @@ struct StocksListView: View {
     }
     
     private var loadedView: some View {
-        List(viewModel.filteredStocks) { stock in
-            Button {
-                onSelectStock(stock.symbol)
-            } label: {
-                StockRowView(stock: stock)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(Rectangle())
+        ScrollViewReader { proxy in
+            List {
+                ForEach(Array(viewModel.filteredStocks.enumerated()), id: \.element.id) { index, stock in
+                    Button {
+                        onSelectStock(stock.symbol)
+                    } label: {
+                        StockRowView(stock: stock)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
+                    }
+                    .id(index)
+                    .buttonStyle(.plain)
+                    .onAppear {
+                        let isFirst = stock.id == viewModel.filteredStocks.first?.id
+                        viewModel.setUserAtTop(isFirst)
+
+                        Task {
+                            await viewModel.loadNextPageIfNeeded(currentItem: stock)
+                        }
+                    }
+                }
+
+                if viewModel.isLoadingNextPage {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                    .listRowSeparator(.hidden)
+                }
             }
-            .buttonStyle(.plain)
+            .listStyle(.plain)
+            .onChange(of: viewModel.scrollToTopTrigger) {
+                withAnimation {
+                    proxy.scrollTo(0, anchor: .top)
+                }
+            }
         }
-        .listStyle(.plain)
     }
     
     private func errorView(_ errorMessage: String) -> some View {

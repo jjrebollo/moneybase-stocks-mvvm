@@ -11,11 +11,19 @@ import Combine
 @MainActor
 final class StocksListViewModel: BaseViewModel {
     @Published private(set) var stocks: [StockQuote] = []
+    @Published private(set) var isLoadingNextPage = false
+    @Published private(set) var showRefreshAvailableCTA = false
+    @Published private(set) var scrollToTopTrigger = false
     @Published var searchText = ""
 
     private let fetchStocksUseCase: any FetchStocksUseCaseProtocol
     private var refreshTask: Task<Void, Never>?
     private var shouldAutoRefresh: Bool
+
+    private var currentPage = 1
+    private var hasMorePages = true
+    private var isUserAtTop = true
+    private var isRefreshingPageOne = false
 
     init(fetchStocksUseCase: any FetchStocksUseCaseProtocol,
          shouldAutoRefresh: Bool) {
@@ -38,7 +46,7 @@ final class StocksListViewModel: BaseViewModel {
 
     func onAppear() async {
         if stocks.isEmpty {
-            await refresh()
+            await resetAndLoadPageOne(showLoader: true)
         }
 
         startAutoRefresh()
@@ -50,30 +58,72 @@ final class StocksListViewModel: BaseViewModel {
     }
 
     func refresh() async {
-        await loadStocks(showLoader: true)
+        await resetAndLoadPageOne(showLoader: false)
+    }
+
+    func refreshFromCTA() async {
+        showRefreshAvailableCTA = false
+        await resetAndLoadPageOne(showLoader: true)
+        scrollToTopTrigger.toggle()
+    }
+
+    func setUserAtTop(_ isAtTop: Bool) {
+        isUserAtTop = isAtTop
+    }
+
+    func loadNextPageIfNeeded(currentItem: StockQuote) async {
+        guard hasMorePages else { return }
+        guard !isLoadingNextPage else { return }
+        guard !isRefreshingPageOne else { return }
+        guard currentItem.id == stocks.last?.id else { return }
+
+        let nextPage = currentPage + 1
+        isLoadingNextPage = true
+        defer { isLoadingNextPage = false }
+
+        guard let pageStocks = await performLoading(showLoading: false, {
+            try await fetchStocksUseCase.execute(nextPage)
+        }) else {
+            return
+        }
+
+        guard !pageStocks.isEmpty else {
+            hasMorePages = false
+            return
+        }
+
+        stocks.append(contentsOf: pageStocks)
+        currentPage = nextPage
     }
 
     private func startAutoRefresh() {
         guard refreshTask == nil,
               shouldAutoRefresh else { return }
 
-        refreshTask = Task { [weak self] in
+        refreshTask = Task {
             while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(8))
-
+                try? await Task.sleep(nanoseconds: 8_000_000_000)
                 guard !Task.isCancelled else { return }
-                await self?.loadStocks(showLoader: false)
+
+                if isUserAtTop {
+                    await resetAndLoadPageOne(showLoader: false)
+                } else {
+                    showRefreshAvailableCTA = true
+                }
             }
         }
     }
 
-    private func loadStocks(showLoader: Bool) async {
-        let loadedStocks = await performLoading(showLoading: showLoader) {
-            try await fetchStocksUseCase.execute()
-        }
+    private func resetAndLoadPageOne(showLoader: Bool) async {
+        guard !isRefreshingPageOne else { return }
+        isRefreshingPageOne = true
+        defer { isRefreshingPageOne = false }
 
-        if let loadedStocks {
-            self.stocks = loadedStocks
+        await performLoading(showLoading: showLoader) {
+            let firstPageStocks = try await fetchStocksUseCase.execute(1)
+            stocks = firstPageStocks
+            currentPage = 1
+            hasMorePages = !firstPageStocks.isEmpty
         }
     }
 }

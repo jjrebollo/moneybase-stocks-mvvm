@@ -8,8 +8,14 @@
 import Foundation
 
 protocol StocksRepository: Sendable {
-    func fetchStocks() async throws -> [StockQuote]
+    func fetchStocks(page: Int) async throws -> [StockQuote]
     func fetchStockProfile(symbol: String) async throws -> StockProfile
+}
+
+extension StocksRepository {
+    func fetchStocks() async throws -> [StockQuote] {
+        try await fetchStocks(page: 1)
+    }
 }
 
 enum StocksError: LocalizedError {

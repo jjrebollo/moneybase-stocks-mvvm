@@ -8,10 +8,10 @@
 import Foundation
 
 struct StocksListResponseDTO: Decodable {
-    let body: [StockListItemDTO]
+    let body: [StockListItemDTO]?
     
     func parseToDomainModel() -> [StockQuote] {
-        body.compactMap { $0.parseToDomainModel() }
+        (body ?? []).compactMap { $0.parseToDomainModel() }
     }
 }
 

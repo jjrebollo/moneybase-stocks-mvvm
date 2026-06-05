@@ -8,11 +8,24 @@ iOS take-home project for the Moneybase interview process.
 - Stock detail screen with expanded company profile data
 - Search by symbol or company name
 - Auto-refresh every 8 seconds
+- Infinite scroll with page-based loading
+- Refresh CTA in the navigation bar when the list is scrolled away from the top
 - Pull-to-refresh support
 - MVVM-C architecture with Swift Concurrency
 - Dependency Injection through a composition root
 - Live RapidAPI integration (`yahoo-finance15`) with reusable request builder abstraction
 - DTO-to-domain mapping layer for list and detail responses
+
+## Refresh and Pagination UX
+
+The stock list keeps the 8-second refresh requirement, but the app now trades a strict always-replace approach for a smoother user experience.
+
+- When the user is at the top of the list, page 1 is refreshed automatically every 8 seconds.
+- When the user scrolls deep into the list, the app shows a refresh button in the navigation bar instead of forcing the list to jump.
+- Tapping the refresh button reloads page 1, resets pagination, and scrolls the list back to the top.
+- Infinite scroll still loads the next pages as the user reaches the bottom of the list.
+
+This keeps the data fresh while avoiding disruptive scroll jumps and unstable list reordering during reading.
 
 ## Architecture
 
