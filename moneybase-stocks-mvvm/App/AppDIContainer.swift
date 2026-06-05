@@ -10,8 +10,15 @@ import Foundation
 final class AppDIContainer {
     private let repository: StocksRepository
 
-    init(repository: StocksRepository = MockStocksRepository()) {
-        self.repository = repository
+    init(repository: StocksRepository? = nil) {
+        if let repository {
+            self.repository = repository
+        } else {
+            self.repository = RemoteStocksRepository(
+                httpClient: URLSessionHTTPClient(),
+                configuration: .yahooFinance15
+            )
+        }
     }
 
     func makeStocksListViewModel(shouldAutoRefresh: Bool) -> StocksListViewModel {

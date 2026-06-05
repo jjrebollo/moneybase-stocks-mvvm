@@ -20,5 +20,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(container: AppDIContainer())
+    ContentView(container: AppDIContainer(repository: MockStocksRepository()))
 }

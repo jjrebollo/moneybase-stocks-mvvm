@@ -11,15 +11,27 @@ iOS take-home project for the Moneybase interview process.
 - Pull-to-refresh support
 - MVVM-C architecture with Swift Concurrency
 - Dependency Injection through a composition root
+- Live RapidAPI integration (`yahoo-finance15`) with reusable request builder abstraction
+- DTO-to-domain mapping layer for list and detail responses
 
 ## Architecture
 
 The project follows a layered MVVM-C setup:
 
 - `Domain`: entities, repository contracts, and use cases
-- `Data`: mock repository implementation and seed data
+- `Data`: remote repository, network stack, DTO models, and mock data support
 - `Presentation`: SwiftUI views, view models, coordinators, and coordinator views
 - `App`: dependency container and wiring
+
+### Network stack (latest)
+
+The networking layer now follows an `ApiBuilder` style design:
+
+- `ApiBuilder`: centralizes `URLRequest` construction (scheme, host, path, headers, query, method)
+- `YahooFinanceEndpoint`: endpoint enum that conforms to `ApiBuilder`
+- `HTTPClient` + `URLSessionHTTPClient`: transport abstraction for testability
+- `RemoteStocksRepository`: generic request execution + decoding, then maps DTOs to domain models
+- `StocksListResponseDTO` and `StockProfileResponseDTO`: response parsing and domain mapping logic
 
 ### Navigation with Coordinator Pattern
 
@@ -54,12 +66,41 @@ The app uses a lightweight DI pattern via `AppDIContainer`.
 
 1. Open `moneybase-stocks-mvvm.xcodeproj` in Xcode.
 2. Select the `moneybase-stocks-mvvm` scheme.
-3. Run on an iOS simulator.
+3. Add `RAPID_API_KEY` in your Run scheme environment variables.
+4. Run on an iOS simulator.
+
+## Secrets (local + CI)
+
+- The API key is not hardcoded in source code.
+- The app reads `RAPID_API_KEY` from:
+	- process environment (preferred for local runs and CI)
+	- `Info.plist` value `RAPID_API_KEY` (fallback)
+- If the key is missing, networking fails fast with `missingAPIKey`.
+
+Local development:
+
+1. Open Product > Scheme > Edit Scheme.
+2. Run > Arguments > Environment Variables.
+3. Add `RAPID_API_KEY=<your_key>`.
+
+![Xcode scheme environment variable setup](assets/images/rapid-api-key-scheme.png)
+
+CI example:
+
+- Store `RAPID_API_KEY` in your CI secret manager.
+- Export/inject it before calling `xcodebuild`.
 
 ## Current data source
 
-The app currently uses mock in-memory data for both list and detail screens.
-A network-backed repository can be introduced later and injected through `AppDIContainer`.
+The app currently uses a live network-backed repository by default:
+
+- `RemoteStocksRepository` is wired in `AppDIContainer`
+- Provider: RapidAPI host `yahoo-finance15.p.rapidapi.com`
+- Endpoints used:
+	- list: `/api/v2/markets/tickers`
+	- detail: `/api/v1/markets/stock/modules`
+
+Mock data support is still available by injecting a custom `StocksRepository` into `AppDIContainer` (useful for previews/tests).
 
 ## API selection rationale
 
@@ -72,15 +113,6 @@ During implementation, that listing was not available from the current RapidAPI 
 
 - `sparior/yahoo-finance15` (host: `yahoo-finance15.p.rapidapi.com`)
 
-After clarification from the interviewer that any API is acceptable as long as the app works, the chosen integration path is:
-
-- Keep the architecture API-agnostic via repository/use case abstractions
-- Implement with mock data first
-- Use `yahoo-finance15` as the live data source when wiring networking
-
-Expected live endpoint mapping:
-
-- List screen: market quote/ticker endpoint from `yahoo-finance15`
-- Detail screen: symbol/profile endpoint from `yahoo-finance15`
+After clarification from the interviewer that any API is acceptable as long as the app works, the implementation keeps the app API-agnostic through repository/use case abstractions while using `yahoo-finance15` as the concrete provider.
 
 This keeps behavior aligned with the task requirements while avoiding dependency on an inaccessible listing.

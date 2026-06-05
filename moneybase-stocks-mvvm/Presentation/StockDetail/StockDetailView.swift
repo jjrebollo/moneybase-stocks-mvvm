@@ -91,7 +91,9 @@ private struct DetailRow: View {
 }
 
 #Preview {
+    let previewContainer = AppDIContainer(repository: MockStocksRepository())
+
     StockDetailView(
-        viewModel: AppDIContainer().makeStockDetailViewModel(symbol: "AAPL")
+        viewModel: previewContainer.makeStockDetailViewModel(symbol: "AAPL")
     )
 }

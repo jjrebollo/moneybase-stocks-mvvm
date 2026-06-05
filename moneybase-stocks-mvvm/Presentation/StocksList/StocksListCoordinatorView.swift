@@ -33,7 +33,9 @@ struct StocksListCoordinatorView: View {
 }
 
 #Preview {
+    let previewContainer = AppDIContainer(repository: MockStocksRepository())
+
     StocksListCoordinatorView(
-        coordinator: AppDIContainer().makeStocksListCoordinator(shouldAutoRefresh: false)
+        coordinator: previewContainer.makeStocksListCoordinator(shouldAutoRefresh: false)
     )
 }
