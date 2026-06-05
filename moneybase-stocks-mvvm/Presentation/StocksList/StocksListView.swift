@@ -144,11 +144,13 @@ private struct StockRowView: View {
     }
 }
 
+#if DEBUG
 #Preview {
-    let previewContainer = AppDIContainer(repository: MockStocksRepository())
+    let previewContainer = AppDIContainer(repository: PreviewStocksRepository())
 
     StocksListView(
         viewModel: previewContainer.makeStocksListViewModel(shouldAutoRefresh: false),
         onSelectStock: { _ in }
     )
 }
+#endif

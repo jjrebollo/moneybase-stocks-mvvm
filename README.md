@@ -123,4 +123,47 @@ Local development:
 CI example:
 
 - Store `RAPID_API_KEY` in your CI secret manager.
-- Export/inject it before calling `xcodebuild`.
+- Export/inject it before calling `xcodebuild`: `RAPID_API_KEY="$RAPID_API_KEY" xcodebuild -project moneybase-stocks-mvvm.xcodeproj -scheme moneybase-stocks-mvvm -destination 'platform=iOS Simulator,name=iPhone 17' build`
+
+## Testing
+
+Unit tests are written with Apple's [Swift Testing](https://developer.apple.com/documentation/testing) framework (`import Testing`, `@Test`, `#expect`) rather than XCTest.
+
+### Coverage
+
+- `FetchStocksUseCaseTests`: page selection and default-to-page-one behavior
+- `FetchStockProfileUseCaseTests`: profile lookup by symbol
+- `StocksListViewModelTests`: first-page load, pagination append, filtering, and refresh-from-CTA behavior
+- `StockDetailViewModelTests`: single-fetch guard and profile loading
+
+### Test doubles
+
+- `MockStocksRepository` (test target): a configurable `actor` spy that stubs stocks/profiles per page or symbol, can inject errors, and records `requestedPages` / `requestedSymbols` for assertions.
+- `MockFetchStocksUseCase`: a `FetchStocksUseCaseProtocol` spy that stubs stocks per page, can inject errors, and records `requestedPages` — useful for testing view models in isolation from the repository.
+- `MockFetchStockProfileUseCase`: a `FetchStockProfileUseCaseProtocol` spy that stubs profiles per symbol, can inject errors, and records `requestedSymbols`.
+- `TestDataFactory`: lightweight factory for building `StockQuote` and `StockProfile` fixtures.
+
+Tests inject the mock repository through the `StocksRepository` protocol into the real use cases and view models, keeping them fast and network-free.
+
+Note: this is separate from `PreviewStocksRepository` in the app target, which only ships in `DEBUG` builds to power SwiftUI previews.
+
+### Schemes
+
+Testing is split into dedicated schemes so unit tests can run without launching the UI test runner:
+
+- `moneybase-stocks-mvvm-UnitTests`: runs only the unit test target
+- `moneybase-stocks-mvvm-UITests`: runs only the UI test target
+
+### Running tests
+
+Run the unit tests from the command line:
+
+```bash
+xcodebuild \
+  -project moneybase-stocks-mvvm.xcodeproj \
+  -scheme moneybase-stocks-mvvm-UnitTests \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  test
+```
+
+Or select the `moneybase-stocks-mvvm-UnitTests` scheme in Xcode and press Cmd+U.

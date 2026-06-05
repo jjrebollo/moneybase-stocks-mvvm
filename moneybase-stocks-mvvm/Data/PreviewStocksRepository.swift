@@ -1,5 +1,5 @@
 //
-//  MockStocksRepository.swift
+//  PreviewStocksRepository.swift
 //  moneybase-stocks-mvvm
 //
 //  Created by Juan Jose Rebollo on 04/06/2026.
@@ -7,8 +7,9 @@
 
 import Foundation
 
-actor MockStocksRepository: StocksRepository {
-    private var quotes: [StockQuote]
+#if DEBUG
+actor PreviewStocksRepository: StocksRepository {
+    private let quotes: [StockQuote]
     private let profiles: [String: StockProfile]
 
     init(
@@ -19,30 +20,12 @@ actor MockStocksRepository: StocksRepository {
         self.profiles = profiles
     }
 
-    func fetchStocks() async throws -> [StockQuote] {
-        try await Task.sleep(for: .milliseconds(250))
-
-        quotes = quotes.map { quote in
-            var updatedQuote = quote
-            let drift = Double.random(in: -2.4...2.4)
-            let previousPrice = max(updatedQuote.lastPrice, 1)
-            let currentPrice = max(previousPrice + drift, 1)
-
-            updatedQuote.lastPrice = currentPrice
-            updatedQuote.netChange = drift
-            updatedQuote.percentChange = (drift / previousPrice) * 100
-            return updatedQuote
-        }
-
-        return quotes.sorted { $0.marketCap > $1.marketCap }
-    }
-
     func fetchStocks(page: Int) async throws -> [StockQuote] {
         guard page == 1 else {
             return []
         }
 
-        return try await fetchStocks()
+        return quotes.sorted { $0.marketCap > $1.marketCap }
     }
 
     func fetchStockProfile(symbol: String) async throws -> StockProfile {
@@ -163,3 +146,4 @@ enum MockStockData {
         )
     ]
 }
+#endif

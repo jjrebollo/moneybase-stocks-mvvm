@@ -19,6 +19,8 @@ struct ContentView: View {
     }
 }
 
+#if DEBUG
 #Preview {
-    ContentView(container: AppDIContainer(repository: MockStocksRepository()))
+    ContentView(container: AppDIContainer(repository: PreviewStocksRepository()))
 }
+#endif
