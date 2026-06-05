@@ -79,9 +79,12 @@ The app uses a lightweight DI pattern via `AppDIContainer`.
 
 Local development:
 
-1. Open Product > Scheme > Edit Scheme.
-2. Run > Arguments > Environment Variables.
-3. Add `RAPID_API_KEY=<your_key>`.
+1. Open Product > Scheme > Manage Schemes.
+2. Duplicate `moneybase-stocks-mvvm` and name it something like `moneybase-stocks-mvvm-local`.
+3. Make sure this local scheme is not Shared.
+4. Open Product > Scheme > Edit Scheme for your local scheme.
+5. Run > Arguments > Environment Variables.
+6. Add `RAPID_API_KEY=<your_key>`.
 
 ![Xcode scheme environment variable setup](assets/images/rapid-api-key-scheme.png)
 
