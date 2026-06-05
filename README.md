@@ -16,7 +16,7 @@ iOS take-home project for the Moneybase interview process.
 - Live RapidAPI integration (`yahoo-finance15`) with reusable request builder abstraction
 - DTO-to-domain mapping layer for list and detail responses
 
-## Refresh and Pagination UX
+### Refresh and Pagination UX
 
 The stock list keeps the 8-second refresh requirement, but the app now trades a strict always-replace approach for a smoother user experience.
 
@@ -36,16 +36,6 @@ The project follows a layered MVVM-C setup:
 - `Presentation`: SwiftUI views, view models, coordinators, and coordinator views
 - `App`: dependency container and wiring
 
-### Network stack (latest)
-
-The networking layer now follows an `ApiBuilder` style design:
-
-- `ApiBuilder`: centralizes `URLRequest` construction (scheme, host, path, headers, query, method)
-- `YahooFinanceEndpoint`: endpoint enum that conforms to `ApiBuilder`
-- `HTTPClient` + `URLSessionHTTPClient`: transport abstraction for testability
-- `RemoteStocksRepository`: generic request execution + decoding, then maps DTOs to domain models
-- `StocksListResponseDTO` and `StockProfileResponseDTO`: response parsing and domain mapping logic
-
 ### Navigation with Coordinator Pattern
 
 Navigation responsibilities are handled by coordinators instead of screen views:
@@ -57,15 +47,7 @@ Navigation responsibilities are handled by coordinators instead of screen views:
 
 This keeps views focused on rendering and interaction, while routing remains in coordinator objects.
 
-### SOLID applied
-
-- Single Responsibility: views render UI, view models manage state, repositories fetch data
-- Open/Closed: repository protocol allows swapping mock with real API without changing view models
-- Liskov Substitution: any repository implementation can be injected through the protocol
-- Interface Segregation: focused contracts for each use case
-- Dependency Inversion: view models depend on abstractions, not concrete data sources
-
-## Dependency Injection
+### Dependency Injection
 
 The app uses a lightweight DI pattern via `AppDIContainer`.
 
@@ -75,6 +57,36 @@ The app uses a lightweight DI pattern via `AppDIContainer`.
 - Inject use cases into view models
 - Inject repository into use cases
 
+### Network stack (latest)
+
+The networking layer now follows an `ApiBuilder` style design:
+
+- `ApiBuilder`: centralizes `URLRequest` construction (scheme, host, path, headers, query, method)
+- `YahooFinanceEndpoint`: endpoint enum that conforms to `ApiBuilder`
+- `HTTPClient` + `URLSessionHTTPClient`: transport abstraction for testability
+- `RemoteStocksRepository`: generic request execution + decoding, then maps DTOs to domain models
+- `StocksListResponseDTO` and `StockProfileResponseDTO`: response parsing and domain mapping logic
+
+### Current data source
+
+The app currently uses a live network-backed repository by default:
+
+- `RemoteStocksRepository` is wired in `AppDIContainer`
+- Provider: RapidAPI host `yahoo-finance15.p.rapidapi.com`
+- Endpoints used:
+	- list: `/api/v2/markets/tickers`
+	- detail: `/api/v1/markets/stock/modules`
+
+Mock data support is still available by injecting a custom `StocksRepository` into `AppDIContainer` (useful for previews/tests).
+
+### SOLID applied
+
+- Single Responsibility: views render UI, view models manage state, repositories fetch data
+- Open/Closed: repository protocol allows swapping mock with real API without changing view models
+- Liskov Substitution: any repository implementation can be injected through the protocol
+- Interface Segregation: focused contracts for each use case
+- Dependency Inversion: view models depend on abstractions, not concrete data sources
+
 ## Running the app
 
 1. Open `moneybase-stocks-mvvm.xcodeproj` in Xcode.
@@ -82,7 +94,7 @@ The app uses a lightweight DI pattern via `AppDIContainer`.
 3. Add `RAPID_API_KEY` in your Run scheme environment variables.
 4. Run on an iOS simulator.
 
-## Secrets (local + CI)
+### Secrets (local + CI)
 
 - The API key is not hardcoded in source code.
 - The app reads `RAPID_API_KEY` from:
@@ -105,18 +117,6 @@ CI example:
 
 - Store `RAPID_API_KEY` in your CI secret manager.
 - Export/inject it before calling `xcodebuild`.
-
-## Current data source
-
-The app currently uses a live network-backed repository by default:
-
-- `RemoteStocksRepository` is wired in `AppDIContainer`
-- Provider: RapidAPI host `yahoo-finance15.p.rapidapi.com`
-- Endpoints used:
-	- list: `/api/v2/markets/tickers`
-	- detail: `/api/v1/markets/stock/modules`
-
-Mock data support is still available by injecting a custom `StocksRepository` into `AppDIContainer` (useful for previews/tests).
 
 ## API selection rationale
 
