@@ -26,8 +26,8 @@ actor RemoteStocksRepository: StocksRepository {
         let payload: StocksListResponseDTO = try await performRequest(
             from: YahooFinanceEndpoint.stocksList(configuration: configuration, page: 1, type: "STOCKS")
         )
-        print("fetchStocks")
-        print("payload: \(payload)")
+        AppLogger.debug("fetchStocks response received", category: "Network")
+        AppLogger.debug("payload: \(payload)", category: "Network")
         
         return await payload.parseToDomainModel()
     }
@@ -36,8 +36,8 @@ actor RemoteStocksRepository: StocksRepository {
         let payload: StockProfileResponseDTO = try await performRequest(
             from: YahooFinanceEndpoint.stockProfile(configuration: configuration, ticker: symbol, module: "asset-profile")
         )
-        print("fetchStockProfile")
-        print("payload: \(payload)")
+        AppLogger.debug("fetchStockProfile response received", category: "Network")
+        AppLogger.debug("payload: \(payload)", category: "Network")
         
         return await payload.parseToDomainModel()
     }

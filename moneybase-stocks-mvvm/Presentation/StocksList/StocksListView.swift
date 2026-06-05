@@ -21,11 +21,12 @@ struct StocksListView: View {
 
     var body: some View {
         Group {
-            if viewModel.filteredStocks.isEmpty {
-                noStockView
-            } else if let errorMessage = viewModel.errorMessage,
-                        viewModel.stocks.isEmpty {
+            
+            if let errorMessage = viewModel.errorMessage,
+                      viewModel.stocks.isEmpty {
                 errorView(errorMessage)
+            } else if viewModel.filteredStocks.isEmpty {
+                noStockView
             } else {
                 loadedView
             }
