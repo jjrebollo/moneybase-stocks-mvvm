@@ -79,13 +79,20 @@ The app currently uses a live network-backed repository by default:
 
 Mock data support is still available by injecting a custom `StocksRepository` into `AppDIContainer` (useful for previews/tests).
 
-### SOLID applied
+#### API selection rationale
 
-- Single Responsibility: views render UI, view models manage state, repositories fetch data
-- Open/Closed: repository protocol allows swapping mock with real API without changing view models
-- Liskov Substitution: any repository implementation can be injected through the protocol
-- Interface Segregation: focused contracts for each use case
-- Dependency Inversion: view models depend on abstractions, not concrete data sources
+The interview task references the RapidAPI listing for `apidojo/yh-finance` and these endpoints:
+
+- `market/v2/get-summary` for list data
+- `stock/v2/get-summary` for detail data
+
+During implementation, that listing was not available from the current RapidAPI account/portal view, while another Yahoo Finance listing was accessible:
+
+- `sparior/yahoo-finance15` (host: `yahoo-finance15.p.rapidapi.com`)
+
+After clarification from the interviewer that any API is acceptable as long as the app works, the implementation keeps the app API-agnostic through repository/use case abstractions while using `yahoo-finance15` as the concrete provider.
+
+This keeps behavior aligned with the task requirements while avoiding dependency on an inaccessible listing.
 
 ## Running the app
 
@@ -117,18 +124,3 @@ CI example:
 
 - Store `RAPID_API_KEY` in your CI secret manager.
 - Export/inject it before calling `xcodebuild`.
-
-## API selection rationale
-
-The interview task references the RapidAPI listing for `apidojo/yh-finance` and these endpoints:
-
-- `market/v2/get-summary` for list data
-- `stock/v2/get-summary` for detail data
-
-During implementation, that listing was not available from the current RapidAPI account/portal view, while another Yahoo Finance listing was accessible:
-
-- `sparior/yahoo-finance15` (host: `yahoo-finance15.p.rapidapi.com`)
-
-After clarification from the interviewer that any API is acceptable as long as the app works, the implementation keeps the app API-agnostic through repository/use case abstractions while using `yahoo-finance15` as the concrete provider.
-
-This keeps behavior aligned with the task requirements while avoiding dependency on an inaccessible listing.
