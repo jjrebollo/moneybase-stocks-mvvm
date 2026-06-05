@@ -20,10 +20,18 @@ final class AppDIContainer {
             shouldAutoRefresh: shouldAutoRefresh)
     }
 
+    func makeStocksListCoordinator(shouldAutoRefresh: Bool) -> StocksListCoordinator {
+        StocksListCoordinator(container: self, shouldAutoRefresh: shouldAutoRefresh)
+    }
+
     func makeStockDetailViewModel(symbol: String) -> StockDetailViewModel {
         StockDetailViewModel(
             symbol: symbol,
             fetchStockProfileUseCase: FetchStockProfileUseCase(repository: repository)
         )
+    }
+
+    func makeStockDetailCoordinator(symbol: String) -> StockDetailCoordinator {
+        StockDetailCoordinator(symbol: symbol, container: self)
     }
 }

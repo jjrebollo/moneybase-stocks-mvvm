@@ -9,39 +9,37 @@ import SwiftUI
 
 struct StocksListView: View {
     @StateObject private var viewModel: StocksListViewModel
-    private let makeStockDetailViewModel: (String) -> StockDetailViewModel
+    private let onSelectStock: (String) -> Void
 
     init(
         viewModel: StocksListViewModel,
-        makeStockDetailViewModel: @escaping (String) -> StockDetailViewModel
+        onSelectStock: @escaping (String) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
-        self.makeStockDetailViewModel = makeStockDetailViewModel
+        self.onSelectStock = onSelectStock
     }
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if viewModel.filteredStocks.isEmpty {
-                    noStockView
-                } else if let errorMessage = viewModel.errorMessage,
-                            viewModel.stocks.isEmpty {
-                    errorView(errorMessage)
-                } else {
-                    loadedView
-                }
+        Group {
+            if viewModel.filteredStocks.isEmpty {
+                noStockView
+            } else if let errorMessage = viewModel.errorMessage,
+                        viewModel.stocks.isEmpty {
+                errorView(errorMessage)
+            } else {
+                loadedView
             }
-            .navigationTitle("Stocks")
-            .searchable(text: $viewModel.searchText, prompt: "Search by name or symbol")
-            .refreshable {
-                await viewModel.refresh()
-            }
-            .task {
-                await viewModel.onAppear()
-            }
-            .onDisappear {
-                viewModel.onDisappear()
-            }
+        }
+        .navigationTitle("Stocks")
+        .searchable(text: $viewModel.searchText, prompt: "Search by name or symbol")
+        .refreshable {
+            await viewModel.refresh()
+        }
+        .task {
+            await viewModel.onAppear()
+        }
+        .onDisappear {
+            viewModel.onDisappear()
         }
     }
     
@@ -59,11 +57,14 @@ struct StocksListView: View {
     
     private var loadedView: some View {
         List(viewModel.filteredStocks) { stock in
-            NavigationLink {
-                StockDetailView(viewModel: makeStockDetailViewModel(stock.symbol))
+            Button {
+                onSelectStock(stock.symbol)
             } label: {
                 StockRowView(stock: stock)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
             }
+            .buttonStyle(.plain)
         }
         .listStyle(.plain)
     }
@@ -101,15 +102,14 @@ private struct StockRowView: View {
                     .foregroundStyle(stock.isPositiveChange ? .green : .red)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 4)
     }
 }
 
 #Preview {
-    let container = AppDIContainer()
-
     StocksListView(
-        viewModel: container.makeStocksListViewModel(shouldAutoRefresh: false),
-        makeStockDetailViewModel: container.makeStockDetailViewModel(symbol:)
+        viewModel: AppDIContainer().makeStocksListViewModel(shouldAutoRefresh: false),
+        onSelectStock: { _ in }
     )
 }

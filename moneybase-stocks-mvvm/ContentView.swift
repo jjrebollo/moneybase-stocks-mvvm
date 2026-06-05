@@ -8,20 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    private let container: AppDIContainer
-
-    private let listViewModel: StocksListViewModel
+    private let listCoordinator: StocksListCoordinator
 
     init(container: AppDIContainer) {
-        self.container = container
-        self.listViewModel = container.makeStocksListViewModel(shouldAutoRefresh: true)
+        self.listCoordinator = container.makeStocksListCoordinator(shouldAutoRefresh: true)
     }
 
     var body: some View {
-        StocksListView(
-            viewModel: listViewModel,
-            makeStockDetailViewModel: container.makeStockDetailViewModel(symbol:)
-        )
+        StocksListCoordinatorView(coordinator: listCoordinator)
     }
 }
 

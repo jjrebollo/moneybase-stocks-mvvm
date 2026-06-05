@@ -9,17 +9,28 @@ iOS take-home project for the Moneybase interview process.
 - Search by symbol or company name
 - Auto-refresh every 8 seconds
 - Pull-to-refresh support
-- MVVM architecture with Swift Concurrency
+- MVVM-C architecture with Swift Concurrency
 - Dependency Injection through a composition root
 
 ## Architecture
 
-The project follows a simple layered MVVM setup:
+The project follows a layered MVVM-C setup:
 
 - `Domain`: entities, repository contracts, and use cases
 - `Data`: mock repository implementation and seed data
-- `Presentation`: SwiftUI views and view models
+- `Presentation`: SwiftUI views, view models, coordinators, and coordinator views
 - `App`: dependency container and wiring
+
+### Navigation with Coordinator Pattern
+
+Navigation responsibilities are handled by coordinators instead of screen views:
+
+- `StocksListCoordinator` manages list routes and pushes detail flow
+- `StocksListCoordinatorView` hosts the navigation stack for list-related routes
+- `StockDetailCoordinator` builds and owns detail screen dependencies
+- `StockDetailCoordinatorView` renders the detail flow entry point
+
+This keeps views focused on rendering and interaction, while routing remains in coordinator objects.
 
 ### SOLID applied
 
@@ -35,6 +46,7 @@ The app uses a lightweight DI pattern via `AppDIContainer`.
 
 - Build dependencies once at app launch
 - Inject view models into views
+- Inject coordinators into coordinator views
 - Inject use cases into view models
 - Inject repository into use cases
 

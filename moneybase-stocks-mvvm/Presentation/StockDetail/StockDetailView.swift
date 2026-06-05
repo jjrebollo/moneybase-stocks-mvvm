@@ -25,10 +25,8 @@ struct StockDetailView: View {
                 loadedView(profile)
             }
         }
-        .onAppear {
-            Task {
-                await viewModel.loadIfNeeded()
-            }
+        .task {
+            await viewModel.loadIfNeeded()
         }
         .navigationTitle(viewModel.symbol)
         .navigationBarTitleDisplayMode(.inline)
