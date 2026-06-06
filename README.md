@@ -204,3 +204,31 @@ Notes:
 - The runner overrides the simulator via `SCAN_DEVICE` so the workflow targets a device available on the runner image.
 - `Gemfile.lock` pins both `x86_64-darwin` and `arm64-darwin` platforms so the frozen Bundler install resolves on the Apple Silicon runner.
 - The actions are pinned to versions that run on Node.js 24.
+
+## Next steps
+
+Areas earmarked for future iterations:
+
+### Reachability feature
+
+Add network reachability monitoring so the app can react to connectivity changes — surface an offline banner, pause the 8-second auto-refresh while disconnected, and automatically retry/resume once the connection is restored.
+
+### Storing mechanism
+
+Introduce a local persistence layer (e.g. a cache or database) to store the last fetched stocks and profiles. This would enable offline reads, faster cold starts, and a smoother experience when the network is slow or unavailable.
+
+### fastlane match and pilot to deploy the app to TestFlight
+
+Extend the fastlane setup with [`match`](https://docs.fastlane.tools/actions/match/) for shared, versioned code-signing assets and [`pilot`](https://docs.fastlane.tools/actions/pilot/) to build and upload the app to TestFlight, wiring it into a dedicated release lane and CI job.
+
+#### Secrets injected
+
+Source all signing and distribution credentials from CI secrets rather than committing them — `MATCH_PASSWORD`, the App Store Connect API key, and the `match` git repository token would be injected into the environment at build time, consistent with how `RAPID_API_KEY` is already handled.
+
+### Localisation in different languages
+
+Localise user-facing strings (and number/currency formatting) into additional languages using string catalogs, so the app adapts to the user's locale.
+
+#### UI tests
+
+Add UI tests that exercise the localised flows across supported languages, verifying layout and copy in each locale and guarding against truncation or hard-coded strings.
