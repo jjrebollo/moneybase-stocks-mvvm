@@ -11,7 +11,7 @@ protocol FetchStocksUseCaseProtocol: Sendable, BaseUseCaseProtocol<Int, [StockQu
     func handle(input: Int?) async throws -> [StockQuote]
 }
 
-final class FetchStocksUseCase: FetchStocksUseCaseProtocol {
+nonisolated final class FetchStocksUseCase: FetchStocksUseCaseProtocol {
     
     private let repository: StocksRepository
 

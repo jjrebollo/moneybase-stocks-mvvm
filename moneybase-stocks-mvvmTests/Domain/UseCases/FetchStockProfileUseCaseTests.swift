@@ -13,7 +13,7 @@ struct FetchStockProfileUseCaseTests {
     func executeRequestsProfileBySymbol() async throws {
         let profile = TestDataFactory.profile(symbol: "NVDA")
         let repository = MockStocksRepository(profilesBySymbol: ["NVDA": profile])
-        let sut = await FetchStockProfileUseCase(repository: repository)
+        let sut = FetchStockProfileUseCase(repository: repository)
 
         let result = try await sut.execute("NVDA")
 

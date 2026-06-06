@@ -11,7 +11,7 @@ protocol FetchStockProfileUseCaseProtocol: Sendable, BaseUseCaseProtocol<String,
     func handle(input: String?) async throws -> StockProfile
 }
 
-final class FetchStockProfileUseCase: FetchStockProfileUseCaseProtocol {
+nonisolated final class FetchStockProfileUseCase: FetchStockProfileUseCaseProtocol {
     private let repository: StocksRepository
 
     init(repository: StocksRepository) {
