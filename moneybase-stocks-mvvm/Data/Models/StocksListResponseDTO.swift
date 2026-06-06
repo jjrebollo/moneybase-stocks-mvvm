@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct StocksListResponseDTO: Decodable {
+nonisolated struct StocksListResponseDTO: Decodable {
     let body: [StockListItemDTO]?
     
     func parseToDomainModel() -> [StockQuote] {
@@ -15,7 +15,7 @@ struct StocksListResponseDTO: Decodable {
     }
 }
 
-struct StockListItemDTO: Decodable {
+nonisolated struct StockListItemDTO: Decodable {
     let symbol: String
     let name: String
     let lastSale: String

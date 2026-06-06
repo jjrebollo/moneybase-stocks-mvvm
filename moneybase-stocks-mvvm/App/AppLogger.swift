@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class AppLogger {
+nonisolated final class AppLogger {
     static func debug(
         _ message: @autoclosure () -> String,
         category: AppLoggerCategory = .general,

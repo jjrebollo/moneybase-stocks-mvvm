@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct StockProfileResponseDTO: Decodable {
+nonisolated struct StockProfileResponseDTO: Decodable {
     let meta: StockProfileMetaDTO
     let body: StockProfileBodyDTO
     
@@ -23,11 +23,11 @@ struct StockProfileResponseDTO: Decodable {
     }
 }
 
-struct StockProfileMetaDTO: Decodable {
+nonisolated struct StockProfileMetaDTO: Decodable {
     let symbol: String
 }
 
-struct StockProfileBodyDTO: Decodable {
+nonisolated struct StockProfileBodyDTO: Decodable {
     let website: String
     let industry: String
     let sector: String
