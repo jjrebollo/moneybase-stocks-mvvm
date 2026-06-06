@@ -24,6 +24,10 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 
+# Bundler
+.bundle/
+vendor/bundle/
+
 # CocoaPods
 Pods/
 

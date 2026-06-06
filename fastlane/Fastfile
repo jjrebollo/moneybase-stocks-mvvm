@@ -1,0 +1,21 @@
+default_platform(:ios)
+
+# Project-wide constants
+XCODE_PROJECT = "moneybase-stocks-mvvm.xcodeproj"
+UNIT_TEST_SCHEME = "moneybase-stocks-mvvm-UnitTests"
+
+platform :ios do
+  desc "Run the unit test suite via scan"
+  lane :tests do
+    scan(
+      project: XCODE_PROJECT,
+      scheme: UNIT_TEST_SCHEME,
+      # Allow CI to override the simulator with the SCAN_DEVICE env var.
+      devices: [ENV.fetch("SCAN_DEVICE", "iPhone 17")],
+      clean: true,
+      result_bundle: true,
+      output_directory: "fastlane/test_output",
+      code_coverage: true
+    )
+  end
+end

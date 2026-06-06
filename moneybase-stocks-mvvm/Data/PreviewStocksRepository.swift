@@ -39,7 +39,7 @@ actor PreviewStocksRepository: StocksRepository {
     }
 }
 
-enum MockStockData {
+nonisolated enum MockStockData {
     static let quotes: [StockQuote] = [
         StockQuote(symbol: "AAPL", name: "Apple Inc.", lastPrice: 211.33, netChange: 2.13, percentChange: 1.02, marketCap: 3_200_000_000_000),
         StockQuote(symbol: "MSFT", name: "Microsoft Corporation", lastPrice: 428.70, netChange: -1.87, percentChange: -0.43, marketCap: 3_100_000_000_000),
