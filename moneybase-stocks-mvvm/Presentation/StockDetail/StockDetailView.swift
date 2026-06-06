@@ -40,7 +40,7 @@ struct StockDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Group {
-                    Text(profile.companyName)
+                    Text(viewModel.name)
                         .font(.title2.bold())
                     Text(profile.symbol)
                         .font(.headline)
@@ -95,7 +95,7 @@ private struct DetailRow: View {
     let previewContainer = AppDIContainer(repository: PreviewStocksRepository())
 
     StockDetailView(
-        viewModel: previewContainer.makeStockDetailViewModel(symbol: "AAPL")
+        viewModel: previewContainer.makeStockDetailViewModel(symbol: "AAPL", name: "Apple Inc.")
     )
 }
 #endif

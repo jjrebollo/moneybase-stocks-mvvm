@@ -9,11 +9,11 @@ import SwiftUI
 
 struct StocksListView: View {
     @StateObject private var viewModel: StocksListViewModel
-    private let onSelectStock: (String) -> Void
+    private let onSelectStock: (String, String) -> Void
 
     init(
         viewModel: StocksListViewModel,
-        onSelectStock: @escaping (String) -> Void
+        onSelectStock: @escaping (String, String) -> Void
     ) {
         _viewModel = StateObject(wrappedValue: viewModel)
         self.onSelectStock = onSelectStock
@@ -70,7 +70,7 @@ struct StocksListView: View {
             List {
                 ForEach(Array(viewModel.filteredStocks.enumerated()), id: \.element.id) { index, stock in
                     Button {
-                        onSelectStock(stock.symbol)
+                        onSelectStock(stock.symbol, stock.name)
                     } label: {
                         StockRowView(stock: stock)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -150,7 +150,7 @@ private struct StockRowView: View {
 
     StocksListView(
         viewModel: previewContainer.makeStocksListViewModel(shouldAutoRefresh: false),
-        onSelectStock: { _ in }
+        onSelectStock: { _, _ in }
     )
 }
 #endif

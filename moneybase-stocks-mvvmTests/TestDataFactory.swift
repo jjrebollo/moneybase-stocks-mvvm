@@ -23,7 +23,6 @@ enum TestDataFactory {
     static func profile(symbol: String) -> StockProfile {
         StockProfile(
             symbol: symbol,
-            companyName: "Company \(symbol)",
             sector: "Technology",
             industry: "Software",
             website: "https://example.com",

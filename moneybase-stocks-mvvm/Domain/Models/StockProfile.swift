@@ -9,7 +9,6 @@ import Foundation
 
 struct StockProfile: Equatable, Sendable {
     let symbol: String
-    let companyName: String
     let sector: String
     let industry: String
     let website: String

@@ -56,7 +56,6 @@ nonisolated enum MockStockData {
     static let profiles: [String: StockProfile] = [
         "AAPL": StockProfile(
             symbol: "AAPL",
-            companyName: "Apple Inc.",
             sector: "Technology",
             industry: "Consumer Electronics",
             website: "https://www.apple.com",
@@ -65,7 +64,6 @@ nonisolated enum MockStockData {
         ),
         "MSFT": StockProfile(
             symbol: "MSFT",
-            companyName: "Microsoft Corporation",
             sector: "Technology",
             industry: "Software - Infrastructure",
             website: "https://www.microsoft.com",
@@ -74,7 +72,6 @@ nonisolated enum MockStockData {
         ),
         "NVDA": StockProfile(
             symbol: "NVDA",
-            companyName: "NVIDIA Corporation",
             sector: "Technology",
             industry: "Semiconductors",
             website: "https://www.nvidia.com",
@@ -83,7 +80,6 @@ nonisolated enum MockStockData {
         ),
         "AMZN": StockProfile(
             symbol: "AMZN",
-            companyName: "Amazon.com, Inc.",
             sector: "Consumer Cyclical",
             industry: "Internet Retail",
             website: "https://www.amazon.com",
@@ -92,7 +88,6 @@ nonisolated enum MockStockData {
         ),
         "GOOGL": StockProfile(
             symbol: "GOOGL",
-            companyName: "Alphabet Inc.",
             sector: "Communication Services",
             industry: "Internet Content & Information",
             website: "https://abc.xyz",
@@ -101,7 +96,6 @@ nonisolated enum MockStockData {
         ),
         "TSLA": StockProfile(
             symbol: "TSLA",
-            companyName: "Tesla, Inc.",
             sector: "Consumer Cyclical",
             industry: "Auto Manufacturers",
             website: "https://www.tesla.com",
@@ -110,7 +104,6 @@ nonisolated enum MockStockData {
         ),
         "META": StockProfile(
             symbol: "META",
-            companyName: "Meta Platforms, Inc.",
             sector: "Communication Services",
             industry: "Internet Content & Information",
             website: "https://about.meta.com",
@@ -119,7 +112,6 @@ nonisolated enum MockStockData {
         ),
         "NFLX": StockProfile(
             symbol: "NFLX",
-            companyName: "Netflix, Inc.",
             sector: "Communication Services",
             industry: "Entertainment",
             website: "https://www.netflix.com",
@@ -128,7 +120,6 @@ nonisolated enum MockStockData {
         ),
         "JPM": StockProfile(
             symbol: "JPM",
-            companyName: "JPMorgan Chase & Co.",
             sector: "Financial Services",
             industry: "Banks - Diversified",
             website: "https://www.jpmorganchase.com",
@@ -137,7 +128,6 @@ nonisolated enum MockStockData {
         ),
         "V": StockProfile(
             symbol: "V",
-            companyName: "Visa Inc.",
             sector: "Financial Services",
             industry: "Credit Services",
             website: "https://usa.visa.com",

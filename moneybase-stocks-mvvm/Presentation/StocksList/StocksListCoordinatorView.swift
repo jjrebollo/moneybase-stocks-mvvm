@@ -18,13 +18,13 @@ struct StocksListCoordinatorView: View {
         NavigationStack(path: $coordinator.path) {
             StocksListView(
                 viewModel: coordinator.viewModel,
-                onSelectStock: coordinator.showStockDetail(symbol:)
+                onSelectStock: coordinator.showStockDetail(symbol:name:)
             )
             .navigationDestination(for: StocksListCoordinator.Route.self) { route in
                 switch route {
-                case .stockDetail(let symbol):
+                case .stockDetail(let symbol, let name):
                     StockDetailCoordinatorView(
-                        coordinator: coordinator.makeStockDetailCoordinator(symbol: symbol)
+                        coordinator: coordinator.makeStockDetailCoordinator(symbol: symbol, name: name)
                     )
                 }
             }

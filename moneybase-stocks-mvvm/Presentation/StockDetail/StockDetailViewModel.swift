@@ -13,11 +13,13 @@ final class StockDetailViewModel: BaseViewModel {
     @Published private(set) var profile: StockProfile?
 
     let symbol: String
+    let name: String
 
     private let fetchStockProfileUseCase: any FetchStockProfileUseCaseProtocol
 
-    init(symbol: String, fetchStockProfileUseCase: any FetchStockProfileUseCaseProtocol) {
+    init(symbol: String, name: String, fetchStockProfileUseCase: any FetchStockProfileUseCaseProtocol) {
         self.symbol = symbol
+        self.name = name
         self.fetchStockProfileUseCase = fetchStockProfileUseCase
     }
 

@@ -11,7 +11,7 @@ import Foundation
 @MainActor
 final class StocksListCoordinator: ObservableObject {
     enum Route: Hashable {
-        case stockDetail(String)
+        case stockDetail(symbol: String, name: String)
     }
 
     @Published var path: [Route] = []
@@ -25,11 +25,11 @@ final class StocksListCoordinator: ObservableObject {
         self.viewModel = container.makeStocksListViewModel(shouldAutoRefresh: shouldAutoRefresh)
     }
 
-    func showStockDetail(symbol: String) {
-        path.append(.stockDetail(symbol))
+    func showStockDetail(symbol: String, name: String) {
+        path.append(.stockDetail(symbol: symbol, name: name))
     }
 
-    func makeStockDetailCoordinator(symbol: String) -> StockDetailCoordinator {
-        container.makeStockDetailCoordinator(symbol: symbol)
+    func makeStockDetailCoordinator(symbol: String, name: String) -> StockDetailCoordinator {
+        container.makeStockDetailCoordinator(symbol: symbol, name: name)
     }
 }

@@ -24,7 +24,7 @@ struct StockDetailCoordinatorView: View {
     let previewContainer = AppDIContainer(repository: PreviewStocksRepository())
 
     StockDetailCoordinatorView(
-        coordinator: previewContainer.makeStockDetailCoordinator(symbol: "AAPL")
+        coordinator: previewContainer.makeStockDetailCoordinator(symbol: "AAPL", name: "Apple Inc.")
     )
 }
 #endif

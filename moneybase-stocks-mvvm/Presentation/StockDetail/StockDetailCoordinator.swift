@@ -11,10 +11,12 @@ import Foundation
 @MainActor
 final class StockDetailCoordinator: ObservableObject {
     let symbol: String
+    let name: String
     let viewModel: StockDetailViewModel
 
-    init(symbol: String, container: AppDIContainer) {
+    init(symbol: String, name: String, container: AppDIContainer) {
         self.symbol = symbol
-        self.viewModel = container.makeStockDetailViewModel(symbol: symbol)
+        self.name = name
+        self.viewModel = container.makeStockDetailViewModel(symbol: symbol, name: name)
     }
 }

@@ -31,14 +31,15 @@ final class AppDIContainer {
         StocksListCoordinator(container: self, shouldAutoRefresh: shouldAutoRefresh)
     }
 
-    func makeStockDetailViewModel(symbol: String) -> StockDetailViewModel {
+    func makeStockDetailViewModel(symbol: String, name: String) -> StockDetailViewModel {
         StockDetailViewModel(
             symbol: symbol,
+            name: name,
             fetchStockProfileUseCase: FetchStockProfileUseCase(repository: repository)
         )
     }
 
-    func makeStockDetailCoordinator(symbol: String) -> StockDetailCoordinator {
-        StockDetailCoordinator(symbol: symbol, container: self)
+    func makeStockDetailCoordinator(symbol: String, name: String) -> StockDetailCoordinator {
+        StockDetailCoordinator(symbol: symbol, name: name, container: self)
     }
 }

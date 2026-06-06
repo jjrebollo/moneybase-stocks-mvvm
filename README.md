@@ -88,7 +88,7 @@ The interview task references the RapidAPI listing for `apidojo/yh-finance` and 
 
 During implementation, that listing was not available from the current RapidAPI account/portal view, while another Yahoo Finance listing was accessible:
 
-- `sparior/yahoo-finance15` (host: `yahoo-finance15.p.rapidapi.com`)
+- [`sparior/yahoo-finance15`](https://rapidapi.com/sparior/api/yahoo-finance15/playground/apiendpoint_18b0e0c0-9451-4592-9aa5-c1170ea15601) (host: `yahoo-finance15.p.rapidapi.com`)
 
 After clarification from the interviewer that any API is acceptable as long as the app works, the implementation keeps the app API-agnostic through repository/use case abstractions while using `yahoo-finance15` as the concrete provider.
 
@@ -131,10 +131,9 @@ Unit tests are written with Apple's [Swift Testing](https://developer.apple.com/
 
 ### Coverage
 
-- `FetchStocksUseCaseTests`: page selection and default-to-page-one behavior
-- `FetchStockProfileUseCaseTests`: profile lookup by symbol
-- `StocksListViewModelTests`: first-page load, pagination append, filtering, and refresh-from-CTA behavior
-- `StockDetailViewModelTests`: single-fetch guard and profile loading
+- Use cases: page selection, default-to-page-one behavior, and profile lookup by symbol
+- View models: first-page load, pagination append, filtering, refresh-from-CTA behavior, single-fetch guard, and profile loading
+- Models and DTOs: response decoding, DTO-to-domain mapping, invalid-item filtering, and formatted/computed properties
 
 ### Test doubles
 
@@ -167,3 +166,39 @@ xcodebuild \
 ```
 
 Or select the `moneybase-stocks-mvvm-UnitTests` scheme in Xcode and press Cmd+U.
+
+## Continuous Integration
+
+The unit tests run automatically on every push and pull request to `main` via GitHub Actions and [fastlane](https://fastlane.tools).
+
+### fastlane
+
+fastlane is managed through Bundler. Install the toolchain once:
+
+```bash
+bundle install
+```
+
+Run the unit test lane locally:
+
+```bash
+bundle exec fastlane tests
+```
+
+The `tests` lane uses [`scan`](https://docs.fastlane.tools/actions/scan/) to build and test the `moneybase-stocks-mvvm-UnitTests` scheme, writing a result bundle and code coverage to `fastlane/test_output`. The simulator can be overridden with the `SCAN_DEVICE` environment variable (defaults to `iPhone 17`).
+
+### GitHub Actions workflow
+
+The workflow lives in [`.github/workflows/ci.yml`](.github/workflows/ci.yml) and runs the `Unit Tests` job on the `macos-15` runner:
+
+1. `actions/checkout@v5` checks out the repository.
+2. `maxim-lobanov/setup-xcode@v1` selects the latest stable Xcode.
+3. `ruby/setup-ruby@v1` installs Ruby and caches the Bundler dependencies.
+4. `bundle exec fastlane tests` runs the unit test suite.
+5. `actions/upload-artifact@v7` uploads the `fastlane/test_output` result bundle (always, even on failure).
+
+Notes:
+
+- The runner overrides the simulator via `SCAN_DEVICE` so the workflow targets a device available on the runner image.
+- `Gemfile.lock` pins both `x86_64-darwin` and `arm64-darwin` platforms so the frozen Bundler install resolves on the Apple Silicon runner.
+- The actions are pinned to versions that run on Node.js 24.
