@@ -134,12 +134,14 @@ Unit tests are written with Apple's [Swift Testing](https://developer.apple.com/
 - Use cases: page selection, default-to-page-one behavior, and profile lookup by symbol
 - View models: first-page load, pagination append, filtering, refresh-from-CTA behavior, single-fetch guard, and profile loading
 - Models and DTOs: response decoding, DTO-to-domain mapping, invalid-item filtering, and formatted/computed properties
+- Network layer: request building (path, query, headers), success decoding/mapping, missing-API-key short-circuit, status-code and decoding failures, and `URLSession` transport behavior via a `URLProtocol` stub
 
 ### Test doubles
 
 - `MockStocksRepository` (test target): a configurable `actor` spy that stubs stocks/profiles per page or symbol, can inject errors, and records `requestedPages` / `requestedSymbols` for assertions.
 - `MockFetchStocksUseCase`: a `FetchStocksUseCaseProtocol` spy that stubs stocks per page, can inject errors, and records `requestedPages` — useful for testing view models in isolation from the repository.
 - `MockFetchStockProfileUseCase`: a `FetchStockProfileUseCaseProtocol` spy that stubs profiles per symbol, can inject errors, and records `requestedSymbols`.
+- `MockHTTPClient`: an `HTTPClient` spy that returns a stubbed `(Data, HTTPURLResponse)` or throws, and records the sent requests — used to test `RemoteStocksRepository` without real networking.
 - `TestDataFactory`: lightweight factory for building `StockQuote` and `StockProfile` fixtures.
 
 Tests inject the mock repository through the `StocksRepository` protocol into the real use cases and view models, keeping them fast and network-free.
