@@ -1,5 +1,11 @@
 # moneybase-stocks-mvvm
 
+[![CI](https://github.com/jjrebollo/moneybase-stocks-mvvm/actions/workflows/ci.yml/badge.svg)](https://github.com/jjrebollo/moneybase-stocks-mvvm/actions/workflows/ci.yml)
+[![Swift](https://img.shields.io/badge/Swift-5-orange.svg)](https://swift.org)
+[![Platform](https://img.shields.io/badge/Platform-iOS%2026.0%2B-blue.svg)](https://developer.apple.com/ios/)
+[![Xcode](https://img.shields.io/badge/Xcode-26-blue.svg)](https://developer.apple.com/xcode/)
+[![Architecture](https://img.shields.io/badge/Architecture-MVVM--C-green.svg)](#architecture)
+
 iOS take-home project for the Moneybase interview process.
 
 ## Features
